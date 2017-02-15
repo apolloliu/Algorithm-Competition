@@ -1,0 +1,28 @@
+define max(a, b) (a > b ? a : b)
+typedef long long ll;
+
+const int N = 500005;
+int node[N];
+map<ll, int>bit;
+
+ll lowbit(ll x) {
+	return x & (-x);
+}
+
+void update(ll i, int x) {
+	i += (1ll << 33);
+    	while (i <= (1ll << 34)) {
+		bit[i] += x;
+		i += lowbit(i);
+	}
+}
+
+int getsum(ll i) {
+	int sum = 0;
+	i += (1ll << 33);
+	while (i > 0) {
+		sum += bit[i];
+		i -= lowbit(i);
+	}
+	return sum;
+}
