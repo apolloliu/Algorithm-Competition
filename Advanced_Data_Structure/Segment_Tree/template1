@@ -1,118 +1,55 @@
 #include <bits/stdc++.h>
 using namespace std;
+const int MAXN = 1e6+10;
+int num[MAXN<<2];
 
-const int MAXN_N = 800005;               //MAXN_N
-const int INF=0X3f3f3f3f;
-//const int INT_MAX = 0x3f3f3f3f;
+void Build(int l,int r,int pt)
+{
+     if( l==r ){
+         scanf("%d",&num[pt]);
+         return ;
+     }
+     int mid=(l+r)>>1;
+     Build(l,mid,pt<<1);
+     Build(mid+1,r,pt<<1|1);
+     num[pt]=min(num[pt<<1],num[pt<<1|1]);
+}
 
-int  n, dat[ 2 * MAXN_N ];
+void Update(int i,int data,int l,int r,int pt)
+{
+     if( l==r ){
+         num[pt]=data;
+         return ;
+     }
+     int mid=(l+r)>>1;
+     if(i<=mid) Update(i,data,l,mid,pt<<1);
+     else    Update(i,data,mid+1,r,pt<<1|1);
+     num[pt]=min(num[pt<<1],num[pt<<1|1]);
+}
 
-void init(int n_){
-    n=1;
-        while( n < n_ ) n *=2;
-	    for( int i = 0; i < 2 * n - 1; ++i )  dat[i] = 0;     //编译器内部有INT_MAX
-	    }
+int Query(int L,int R,int l,int r,int pt)
+{
+     if( L<=l&&R>=r)
+         return num[pt];
+     int mid=(l+r)>>1;
+     int ans=0x7f7f7f7f;
+     if(L<=mid) ans=min(ans,Query(L,R,l,mid,pt<<1));
+     if(R>mid) ans=min(ans,Query(L,R,mid+1,r,pt<<1|1));
+     return ans;
+}
 
-	    void update(int k, int a){
-	        k += n-1;
-		    dat[k] = a;
-		        while( k > 0 ){
-			        k = ( k - 1 ) / 2;
-				        dat[k] = max( dat[ k * 2 + 1 ],dat[ k * 2 + 2 ] );
-					    }
-					    }
-
-					    int query(int a,int b,int k,int l,int r){
-					        if(r<=a||b<=l)return 0;
-						    if(a<=l&&r<=b)return dat[k];
-						        else {
-							        int vl=query(a,b,k*2+1,l,(l+r)/2);
-								        int vr=query(a,b,k*2+2,(l+r)/2,r);
-									        return max(vl,vr);
-										    }
-										    }
-										    /*int ql,qr;
-										    int query(int o,int L,int R ){
-										        int M=L+(R-L)/2,ans=INF;
-											    if(ql<=L&&R<=qr)return dat[o];
-											        if(ql<=M)ans=max(ans,query(o*2,L,M));
-												    if(M<qr)ans=max(ans,query(o*2+1,M+1,R));
-												        return ans;
-													}*/
-
-													const int MAXNODE = 2097152;
-													const int MAX = 1000003;
-													struct NODE{
-													    int value;        // 结点对应区间的权值
-													        int left,right;   // 区间 [left,right]
-														}node[MAXNODE];
-														int father[MAX];     // 每个点(当区间长度为0时，对应一个点)对应的结构体数组下标
-
-														void BuildTree(int i,int left,int right){ // 为区间[left,right]建立一个以i为祖先的线段树，i为数组下标，我称作结点序号
-															node[i].left = left;	// 写入第i个结点中的 左区间
-																node[i].right = right;	// 写入第i个结点中的 右区间
-																	node[i].value = 0; 		// 每个区间初始化为 0
-																		if (left == right){	// 当区间长度为 0 时，结束递归
-																				father[left] = i; // 能知道某个点对应的序号，为了更新的时候从下往上一直到顶
-																						return;
-																							}
-																								// 该结点往 左孩子的方向 继续建立线段树，线段的划分是二分思想，如果写过二分查找的话这里很容易接受
-																									// 这里将 区间[left,right] 一分为二了
-																										BuildTree(i<<1, left, (int)floor( (right+left) / 2.0));
-																											// 该结点往 右孩子的方向 继续建立线段树
-																												BuildTree((i<<1) + 1, (int)floor( (right+left) / 2.0) + 1, right);
-																												//	for(int i)
-																												}
-
-
-																												void UpdataTree(int ri){ // 从下往上更新（注：这个点本身已经在函数外更新过了）
-
-																													if (ri == 1)return;	// 向上已经找到了祖先（整个线段树的祖先结点 对应的下标为1）
-																														int fi = ri / 2; 		// ri 的父结点
-																															int a = node[fi<<1].value; // 该父结点的两个孩子结点（左）
-																																int b = node[(fi<<1)+1].value; // 右
-																																	node[fi].value = (a > b)?(a):(b);	// 更新这个父结点（从两个孩子结点中挑个大的）
-																																		UpdataTree(ri/2);		// 递归更新，由父结点往上找
-																																		}
-
-
-																																		int Max = -1<<20;
-																																		void Query(int i,int l,int r){ // i为区间的序号（对应的区间是最大范围的那个区间，也是第一个图最顶端的区间，一般初始是 1 啦）
-																																			if (node[i].left == l && node[i].right == r){ // 找到了一个完全重合的区间
-																																					Max = (Max < node[i].value)?node[i].value:(Max);
-																																							return ;
-																																								}
-																																									i = i << 1; // get the left child of the tree node
-																																										if (l <= node[i].right){ // 左区间有涉及
-																																												if (r <= node[i].right) // 全包含于左区间，则查询区间形态不变
-																																															Query(i, l, r);
-																																																	else // 半包含于左区间，则查询区间拆分，左端点不变，右端点变为左孩子的右区间端点
-																																																				Query(i, l, node[i].right);
-																																																					}
-																																																						i += 1; // right child of the tree
-																																																							if (r >= node[i].left){ // 右区间有涉及
-																																																									if (l >= node[i].left) // 全包含于右区间，则查询区间形态不变
-																																																												Query(i, l, r);
-																																																														else // 半包含于左区间，则查询区间拆分，与上同理
-																																																																	Query(i, node[i].left, r);
-																																																																		}
-																																																																		}
-																																																																		int main()
-																																																																		{
-																																																																		    freopen("in.txt","r",stdin);
-																																																																		        int m;
-																																																																			    char ch[3];
-																																																																			        int A,B,x;
-																																																																				    while(scanf("%d%d",&n,&m)!=EOF){
-																																																																				        //    BuildTree(1,1,n);
-																																																																					        init(n);
-																																																																						        for(int i=1;i<=n;++i){
-																																																																							            scanf("%d",&x);dat[i]=x;}
-																																																																								            for(int i=0;i<m;++i){
-																																																																									                scanf("%s%d%d",ch,&A,&B);
-																																																																											            if(ch[0]=='U')update(A,B);
-																																																																												                else if(ch[0]=='Q'){int res=query(A,B+1,0,1,n);printf("%d\n",res);}
-																																																																														        }
-																																																																															    }
-																																																																															        return 0;
-																																																																																}
+int main()
+{
+    int n,m,a,b;
+    int ch;
+           scanf("%d",&n);
+           Build(1,n,1);
+           scanf("%d",&m);
+           while( m-- ){
+                  scanf("%d%d%d",&ch,&a,&b);
+                  if(ch==0)printf("%d\n",Query(a,b,1,n,1));
+                  else
+                      Update(a,b,1,n,1);
+           }
+    return 0;
+}
