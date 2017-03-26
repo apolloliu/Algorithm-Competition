@@ -1,0 +1,97 @@
+#include <cstdio>
+#include <cstring>
+#include <queue>
+#define MAX_NODE 240005
+#define MAX_CHILD 26
+using namespace std;
+
+class AC_Automaton {
+public:
+    int chd[MAX_NODE][MAX_CHILD];
+    int fail[MAX_NODE];
+    int val[MAX_NODE];
+    int ID[128];
+    int sz;
+    queue<int> q;
+
+    AC_Automaton() {
+        for (int i = 0; i < 26; i++)
+            ID[i + 'a'] = i;
+        Clear();
+    }
+
+    void Clear() {
+        memset(chd, 0, sizeof (chd));
+        memset(fail, 0, sizeof (fail));
+        memset(val, 0, sizeof (val));
+        sz = 1;
+    }
+
+    void Insert(const char *s) {
+        int cur = 1;
+        for (int i = 0; s[i]; i++) {
+            if (!chd[cur][ID[s[i]]]) chd[cur][ID[s[i]]] = ++sz;
+            cur = chd[cur][ID[s[i]]];
+        }
+        val[cur]++;
+    }
+
+    void Build_AC() {
+        while (!q.empty()) q.pop();
+        q.push(1);
+        fail[1] = 1;
+        while (!q.empty()) {
+            int cur = q.front();
+            q.pop();
+            for (int i = 0; i < MAX_CHILD; i++)
+                if (chd[cur][i]) {
+                    if (cur == 1) fail[chd[cur][i]] = 1;
+                    else {
+                        int tmp = fail[cur];
+                        while (tmp != 1 && chd[tmp][i] == 0) tmp = fail[tmp];
+                        if (chd[tmp][i]) fail[chd[cur][i]] = chd[tmp][i];
+                        else fail[chd[cur][i]] = 1;
+                    }
+                    q.push(chd[cur][i]);
+                }
+        }
+    }
+
+    int Query(const char *s) {
+        int ret = 0;
+        int cur = 1, tmp;
+        for (int i = 0; s[i]; i++) {
+            if (chd[cur][ID[s[i]]]) cur = chd[cur][ID[s[i]]];
+            else {
+                while (cur != 1 && chd[cur][ID[s[i]]] == 0) cur = fail[cur];
+                if (chd[cur][ID[s[i]]]) cur = chd[cur][ID[s[i]]];
+            }
+            tmp = cur;
+            while (tmp != 1 && val[tmp] != -1) {
+                ret += val[tmp];
+                val[tmp] = -1;
+                tmp = fail[tmp];
+            }
+        }
+        return ret;
+    }
+} AC;
+
+char s[60], text[1000001];
+
+int main() {
+    int T, n;
+    scanf("%d", &T);
+    while (T--) {
+        scanf("%d", &n);
+        AC.Clear();
+        while (n--) {
+            scanf(" %s", s);
+            AC.Insert(s);
+        }
+        AC.Build_AC();
+        scanf(" %s", text);
+        printf("%d\n", AC.Query(text));
+    }
+    return 0;
+}
