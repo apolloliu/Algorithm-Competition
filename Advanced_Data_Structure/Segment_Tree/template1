@@ -2,7 +2,7 @@
 
 using namespace std;
 
-const int MAXN = 1e6+10;
+const int MAXN = ;    ///define maxn node numbers
 int num[MAXN<<2];
 
 void Build(int l,int r,int pt)
