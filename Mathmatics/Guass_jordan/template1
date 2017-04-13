@@ -1,0 +1,68 @@
+#include <iostream>
+#include <string>
+#include <cmath>
+#include <cstdio>
+#include <cstring>
+#include <cstdlib>
+#include <ctime>
+#include <queue>
+#include <stack>
+#include <list>
+#include <algorithm>
+using namespace std;
+
+const double eps = 1e-8;
+typedef vector<double> vec;
+typedef vector<vec> mat;
+
+vec guass_jordan(const mat& A, const vec& b){
+    int n = A.size();
+    mat B(n, vec(n + 1));
+    for(int i = 0; i < n; ++i){
+        for(int j = 0; j <n; ++j){
+            B[i][j] = A[i][j];
+        }
+    }
+    for(int i = 0; i < n; ++i)B[i][n] = b[i];
+
+    for(int i = 0; i < n; ++i){
+        int pivoit = i;
+        for(int j = i; j < n; ++j){
+            if(abs(B[j][i] > abs(B[pivoit][i]))) pivoit = j;
+        }
+        swap(B[i], B[pivoit]);
+
+        if(abs(B[i][i]) < eps) return vec();
+
+        for(int j = i + 1; j <= n; ++j)B[i][j] /= B[i][i];
+        for(int j = 0; j < n; ++j){
+            if(i!=j){
+                for(int k = i + 1; k <= n; ++k)B[j][k] -= B[j][i] * B[i][k];
+            }
+
+        }
+    }
+    vec x(n);
+    for(int i = 0; i < n; ++i)x[i] = B[i][n];
+    return x;
+}
+
+
+int main() {
+    int T;
+    scanf("%d",&T);
+    int n;
+    while(T--) {
+       scanf("%d",&n);
+       mat A(n, vec(n, 0));
+       for(int i = 0; i < n; ++i){
+            for(int j = 0; j < n; ++j)scanf("%lf",&A[i][j]);
+       }
+       vec b(n);
+       for(int i = 0; i < n; ++i)scanf("%lf",&b[i]);
+       vec res = guass_jordan(A, b);
+       for(int i = 0; i < n ; ++i)printf("%lf ", res[i]);
+       printf("\n");
+    }
+    return 0;
+}

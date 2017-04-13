@@ -1,0 +1,118 @@
+template <typename T, int LEN>
+struct suffixarray
+{
+    int str[LEN*3],sa[LEN*3];
+    int rank[LEN],height[LEN];
+    int id[LEN];
+    int best[LEN][20];
+    int len;
+    bool equal(int *str, int a, int b)
+    {
+        return str[a]==str[b]&&str[a+1]==str[b+1]&&str[a+2]==str[b+2];
+    }
+    bool cmp3(int *str, int *nstr, int a, int b)
+    {
+        if(str[a]!=str[b])     return str[a]<str[b];
+        if(str[a+1]!=str[b+1]) return str[a+1]<str[b+1];
+        return nstr[a+b%3]<nstr[b+b%3];
+    }
+    void radixsort(int *str, int *sa, int *res, int n, int m)
+    {
+        int i;
+        for(i=0;i<m;++i)    id[i]=0;
+        for(i=0;i<n;++i)    ++id[str[sa[i]]];
+        for(i=0;i<m;++i)    id[i+1]+=id[i];
+        for(i=n-1;i>=0;--i) res[--id[str[sa[i]]]]=sa[i];
+    }
+    void dc3(int *str, int *sa, int n, int m)
+    {
+        #define F(x) ((x)/3+((x)%3==1?0:one))
+        #define G(x) ((x)<one?(x)*3+1:((x)-one)*3+2)
+        int *nstr=str+n, *nsa=sa+n, *tmpa=rank, *tmpb=height;
+        int i,j,k,len=0,num=0,zero=0,one=(n+1)/3;
+        for(i=0;i<n;++i) if(i%3)tmpa[len++]=i;
+        str[n]=str[n+1]=0;
+        radixsort(str+2, tmpa, tmpb, len, m);
+        radixsort(str+1, tmpb, tmpa, len, m);
+        radixsort(str+0, tmpa, tmpb, len, m);
+        nstr[F(tmpb[0])]=num++;
+        for(i=1;i<len;++i)
+            nstr[F(tmpb[i])]=equal(str,tmpb[i-1],tmpb[i])?num-1:num++;
+        if(num<len)dc3(nstr,nsa,len,num);
+        else for(i=0;i<len;++i) nsa[nstr[i]]=i;
+        if(n%3==1)tmpa[zero++]=n-1;
+        for(i=0;i<len;++i)if(nsa[i]<one)tmpa[zero++]=nsa[i]*3;
+        radixsort(str, tmpa, tmpb, zero, m);
+        for(i=0;i<len;++i)tmpa[nsa[i]=G(nsa[i])]=i;
+        i=j=0;
+        for(k=0;k<n;++k)
+        if(j>=len||(i<zero&&cmp3(str,tmpa,tmpb[i],nsa[j])))sa[k]=tmpb[i++];
+        else sa[k]=nsa[j++];
+    }
+    bool cmp(int *str, int a, int b, int k)
+    {
+        return str[a]==str[b]&&str[a+k]==str[b+k];
+    }
+    void da(int *str, int *sa, int n, int m)
+    {
+        int *x=rank, *y=height;
+        int i,j,k,num=1;
+        /** 获取长度为1的结果*/
+        for(i=0;i<n;++i)y[i]=i;
+        radixsort(str,y,sa,n,m);
+        for(i=0;i<n;++i)x[i]=str[i];
+        for(i=0;i<n;++i)x[i+n]=y[i+n]=-1;
+        /** 循环排序直到结果唯一或2^k大于n*/
+        for(k=1;num<n;k<<=1,m=num)
+        {
+            /** 通过k-1的结果或得当前结果*/
+            num=j=0;
+            for(i=max(0,n-k);i<n;++i) y[j++]=i;
+            for(i=0;i<n;++i)if(sa[i]>=k)y[j++]=sa[i]-k;
+            radixsort(x,y,sa,n,m);
+            swap(x,y);
+            /** 通过当前结果得到新字符串*/
+            x[sa[0]]=num++;
+            for(i=1;i<n;++i)
+                x[sa[i]]=cmp(y,sa[i-1],sa[i],k)?num-1:num++;
+        }
+    }
+    void initSA(T *s, int n,int m)
+    {
+        int i,j,k=0;
+        str[len=n]=0;//末尾增加一个0，这样就省去一些特殊情况的讨论，也就是最后一个mod 3刚好等于0
+        for(i=0;i<n;++i)str[i]=s[i];
+        dc3(str,sa,n+1,m);
+        for(i=0;i<n;++i)sa[i]=sa[i+1];//第0小的默认为最后一个字符0，所以答案向前移动一位，da算法不用
+
+        //da(str,sa,n,m);
+        for(i=0;i<n;++i)rank[sa[i]]=i;
+        for(i=0;i<n;++i)//计算height数组
+        {
+            if(k)--k;
+            if(rank[i])for(j=sa[rank[i]-1];str[i+k]==str[j+k];++k);
+            else k=0;
+            height[rank[i]]=k;
+        }
+    }
+    void initRMQ()
+    {
+        int i,j;
+        for(i=0;i<len;++i)best[i][0]=height[i];
+        for(j=1;(1<<j)-1<len;++j)
+            for(i=0;i+(1<<j)-1<len;++i)
+                best[i][j]=min(best[i][j-1],best[i+(1<<(j-1))][j-1]);
+    }
+    int RMQ(int l, int r)
+    {
+        int k=0;
+        while(l+(1<<k)-1+1<r-(1<<k)+1)++k;
+        return min(best[l][k],best[r-(1<<k)+1][k]);
+    }
+    int LCPSA(int a, int b)
+    {
+        if(a==b)return len-sa[a];
+        if(++a>b)swap(a,b);
+        return RMQ(a,b);
+    }
+};
