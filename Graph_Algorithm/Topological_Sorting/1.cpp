@@ -1,5 +1,5 @@
 /*
- * Topologic Algorithm using in-degree of vertices.
+ * Topologic Algorithm using Kahn's Algorithm Time Complexity O(V + E)
  */
 
 #include <bits/stdc++.h>
@@ -10,43 +10,23 @@ struct Vertex{
     int in, out;
 };
 
-
 struct Graph{
     int V;
-    Vertex* vet = new Vertex[V];
-    list<int> *adj;
+    Vertex* vet;
 };
 
 struct Graph* create_graph(int V){
-    struct Graph *graph;
+    struct Graph *graph = new Graph;
     graph->V = V;
     graph->vet = new Vertex[V];
     for (int i = 0; i < V; ++i) {
         graph->vet[i].in = graph->vet[i].out = 0;
     }
-    graph->adj = new list<int>[V];
+    return graph;
 };
 
 
-void dfs(Graph* graph, vector<int>& res, bool *vis, int cur){
-    list<int>::iterator it;
-    if(!vis[cur])
-    for(it = graph->adj[cur].begin(); it != graph->adj[cur].end(); ++it){
-        int t = *it;
-        if(graph->vet[t].in == 1 && graph->vet[t].out == 1 && !vis[t]){
-            vis[t] = 1;
-            dfs(graph, res, vis, t);
-            res.push_back(t);
-        } else if(!vis[t]) {
-            res.push_back(t);
-            vis[t] = 1;
-        }
-    }
-    return;
-}
-
-/* You need to complete this function */
-int * topoSort(vector<int> a[], int N)
+int *topoSort(vector<int> a[], int N)
 {
     // Your code here
     vector<int>::iterator it;
@@ -55,7 +35,6 @@ int * topoSort(vector<int> a[], int N)
         for (it = a[i].begin(); it != a[i].end(); ++ it) {
             int s = i;
             int d = *it;
-            graph->adj[s].push_back(d);
             graph->vet[s].out ++;
             graph->vet[d].in ++;
         }
@@ -63,11 +42,9 @@ int * topoSort(vector<int> a[], int N)
     queue<int>que;
     vector<int>res;
     res.clear();
-    bool vis[N] = {0};
     while (!que.empty())que.pop();
     for(int i = 0; i < N; ++i){
         if(graph->vet[i].in == 0){
-            vis[i] = 1;
             que.push(i);
         }
     }
@@ -75,32 +52,19 @@ int * topoSort(vector<int> a[], int N)
         int s = que.front();
         que.pop();
         res.push_back(s);
-        vis[s] = 1;
-        for (int i = 0; i < a[s].size(); ++i) {
-            int d = a[s][i];
-            if(!vis[d]){
-                if(graph->vet[d].in == 1 && graph->vet[d].out == 1){
-                    res.push_back(d);
-                    dfs(graph, res, vis, d);
-                    graph->vet[d].in --;
-                    vis[d];
-                }
-                else {
-                    que.push(d);
-                }
-                vis[d] = 1;
+        for (it = a[s].begin(); it < a[s].end(); ++it) {
+            int d = *it;
+            graph->vet[d].in --;
+            if(graph->vet[d].in == 0){
+                que.push(d);
             }
         }
     }
+
     int *ret = new int[N];
     for (int i = 0; i < N; ++i) {
         *(ret + i) = res[i];
     }
-    for(int i = 0; i < res.size(); ++i){
-        cout << res[i] << " ";
-    }
-    cout << endl;
-    cout << res.size() << endl;
     return ret;
 }
 
