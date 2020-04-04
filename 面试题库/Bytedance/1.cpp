@@ -1,3 +1,6 @@
+// 牛客网，后台开发笔试题
+// https://www.nowcoder.com/test/8537209/summary
+// 第一题
 
 #include <bits/stdc++.h>
 
@@ -79,6 +82,8 @@ int main() {
     }
     return 0;
 }
+
+//测试用例:
 // 4
 // 1 2 3 3
 // 1

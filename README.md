@@ -1,3 +1,3 @@
-# Algorithm Templates
+# Algorithm and interview learning repo
 
-Tempalte collections for algorithm competitions
+Competitive algorithms and Companies' interview problems.
