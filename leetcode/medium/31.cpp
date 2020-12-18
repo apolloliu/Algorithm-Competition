@@ -9,24 +9,17 @@ class Solution {
 public:
     void nextPermutation(vector<int>& nums) {
         int n = nums.size();
-        bool flag = true;
-        if(n >= 2){
-            if(nums[n-1] > nums[n-2]){swap(nums[n-1], nums[n-2]); return;}
-            int i;
-            for(i = n - 1; i >= 1; --i){
-                if(nums[i-1] < nums[i])break;
-            }
-            if(!i){sort(nums.begin(), nums.end()); return;}
-            int mm = INT_MAX, x = nums[i-1], id;
-            for(int j = i; j < n; ++j){
-                if(mm > nums[j] && nums[j] > x){
-                    mm = nums[j];
-                    id = j;
-                }
-            }
-            swap(nums[id], nums[i-1]);
-            sort(nums.begin()+i, nums.end());
+        if(n <= 1)return ;
+        int i;
+        for(i = n - 1; i > 0; --i){
+            if(nums[i-1] < nums[i])break;
         }
+        if(i == 0){reverse(nums.begin(), nums.end()); return;}
+        int j;
+        for(j = i; j < n; ++j){
+            if(nums[i-1] >= nums[j])break;  // 注意这里有可能相等
+        }
+        swap(nums[i-1], nums[j-1]);
+        reverse(nums.begin()+i, nums.end());
     }
 };
-
