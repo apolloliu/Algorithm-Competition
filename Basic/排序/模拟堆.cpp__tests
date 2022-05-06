@@ -1,0 +1,10 @@
+[
+	{
+		"correct_answers":
+		[
+			"-10\n6",
+			"-10\n-10"
+		],
+		"test": "8\nI -10\nPM\nI -10\nD 1\nC 2 8\nI 6\nPM\nDM\n"
+	}
+]
