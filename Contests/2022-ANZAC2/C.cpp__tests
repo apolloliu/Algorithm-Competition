@@ -1,0 +1,14 @@
+[
+	{
+		"test": "2 5\nBERRY -G---\nAPPLE ---YY\nMELON\nBERRY\nLEMON\nLIMES\nAPPLE\n"
+	},
+	{
+		"test": "3 5\nBERRY -G---\nAPPLE ---YY\nLIMES G-GY-\nAPPLE\nBERRY\nLEMON\nLIMES\nMELON\n"
+	},
+	{
+		"test": "3 5\nBLANK --Y--\nSIGHS ----G\nSTORM YGG-Y\nATOMS\nBLANK\nMOATS\nSIGHS\nSTORM\n"
+	},
+	{
+		"test": "4 5\nFRUIT -G--Y\nNUTTY --Y--\nROOTS Y--YG\nSEEDS -YG-G\nFRUIT\nNUTTY\nROOTS\nSEEDS\nTREES\n"
+	}
+]
