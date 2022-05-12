@@ -7,6 +7,7 @@ const int N = 1e5 + 10;
 // n is heap size
 int h[N], n, m;
 
+// 替换或者删除任意位置上的元素才会用到
 void up(int x) {
 	while(x > 1) {
 		int fa = x / 2;
@@ -14,9 +15,7 @@ void up(int x) {
 			swap(h[fa], h[x]);
 		}
 		x /= 2;
-		// cout << x << ' ';
 	}
-	// cout << endl;
 }
 
 void down(int x) {
@@ -47,7 +46,7 @@ void build_heap() {
 		down(i);
 }
 
-void print_minimum() {
+void get_minimum() {
 	// h[1] is the minimum
 	cout << h[1] << ' ';
 	h[1] = h[n];
@@ -68,7 +67,7 @@ int main() {
 	build_heap();
 
 	while(m--) {
-		print_minimum();
+		get_minimum();
 	}
 
 	return 0;

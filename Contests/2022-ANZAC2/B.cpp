@@ -29,11 +29,13 @@ int main(int argc, char * argv[])
 	cin.tie(0);
 
 	int n;
-	scanf("%d", &n);
+	cin >> n;
+	cout << 100./n << endl << 100./(100 - n) << endl;
+	// scanf("%d", &n);
 
-	printf("%.7lf\n", 100./n);
+	// printf("%.7lf\n", 100./n);
 
-	printf("%.7lf\n", 100./(100 - n));
+	// printf("%.7lf\n", 100./(100 - n));
 
 
     return 0;

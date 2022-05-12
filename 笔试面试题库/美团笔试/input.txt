@@ -1,0 +1,39 @@
+6 3 2
+1 4 2 5 3 6
+
+
+post 
+{
+    "username": "test",
+    "email": "test@example.com",
+    "password": "test"
+}
+
+response:
+{
+    "reader": {
+        "email": "test@example.com",
+        "id": 1,
+        "username": "test"
+    }
+}
+
+
+GET:
+
+reponse:
+
+[
+    {
+        "id": 1,
+        "username": "test",
+        "status": null,
+        "email": "test@example.com"
+    },
+    {
+        "id": 2,
+        "username": "admin",
+        "status": null,
+        "email": "admin@example.com"
+    }
+]

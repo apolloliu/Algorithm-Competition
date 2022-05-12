@@ -14,17 +14,8 @@ typedef pair<ll, ll> pll;
 #define ms(s) memset(s, 0, sizeof(s))
 
 const int inf = 1e9;
-const int N = 1e5 + 10;
+const int N = 12345;
 //#define LOCAL
-
-
-ll a[N], d[N];
-
-
-void insert(int l, int r) {
-	d[l] += 1;
-	d[r + 1] -= 1;
-}
 
 
 int main(int argc, char * argv[]) 
@@ -37,29 +28,31 @@ int main(int argc, char * argv[])
 	ios::sync_with_stdio(false);
 	cin.tie(0);
 
-	
-	int n, c;
-	cin >> n >> c;
+	// int a = -1;
+	// cout << unsigned(a) << endl;
 
-	for(int i = 1; i <= n; i++)
-		cin >> a[i];
+	char buff[1024];
 
-	int s, e;
-	s = e = 1;
-	ll sum = a[1];
+	FILE *in=fopen("input.txt", "r");
+	// fgets(buff, 1024, in);
+	// printf("%s\n", buff);
+	// // cout << "size: " << strlen(buff) << endl;
+	// printf("size: %d\n", strlen(buff)) << endl;
+	char c;
+	int i = 0;
+	// while((c=sscanf(in, "%s", c)) != EOF){
+	// 	puts(c);
+	// 	// if(c == '\0')cout <<i <<endl;
+	// 	i++;
+	// }
 
-	while(s <= n) {
-		if(s <= e)insert(s, e);
-		if(e + 1 > n)sum -= a[s++];
-		else if(sum + a[e + 1] > c)sum -= a[s++];
-		else {
-			e++;
-			sum += a[e];
-		}
+	while((c=fgetc(in)) != EOF){
+		putchar(c);
 	}
-
-	for(int i = 1; i <= n; i++)
-		d[i] += d[i - 1], cout << d[i] << endl;
+	fclose(in);
+	// freopen("input.txt", "w", stdout);
+	// printf("abc\0");
+	// printf("ee\0");
 
     return 0;
 }

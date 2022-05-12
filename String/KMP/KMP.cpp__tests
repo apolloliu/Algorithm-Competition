@@ -1,0 +1,18 @@
+[
+	{
+		"test": "3\naba\n5\nababa\n",
+		"uncorrect_answers":
+		[
+			"0 2"
+		]
+	},
+	{
+		"test": "10\nSSS77SSS77\n100\nK7O7ygYn7OSyNW7J4S77KSSi7SK4C7SSS7QIKA77SSS77SSS77SSS77SSS77Sf6l7It0W9SSS77SSS77SSS77SSS77SSS77SSS77\n"
+	},
+	{
+		"test": "1\na\n5\naaaaa\n"
+	},
+	{
+		"test": "3\naaa\n5\naaaaa\n"
+	}
+]
