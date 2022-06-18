@@ -1,0 +1,8 @@
+[
+	{
+		"test": "5 4\nPHPP\nPPHH\nPPPP\nPHPP\nPHHP\n"
+	},
+	{
+		"test": "10 5\nPHHPP\nHPPHP\nPPHPP\nPPPPP\nPPPPP\nPPHPP\nPPHPP\nHPPPH\nHPHHH\nHPHPH\n"
+	}
+]

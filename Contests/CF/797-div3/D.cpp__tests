@@ -1,0 +1,11 @@
+[
+	{
+		"test": "4\n5 3\nBBWBW\n5 5\nBBWBW\n5 1\nBBWBW\n1 1\nW\n"
+	},
+	{
+		"test": "5\n5 3\nWWWWW\n5 3\nWWBWW\n5 3\nBWBWW\n5 5\nBBWBW\n6 4\nBBWWBW\n"
+	},
+	{
+		"test": "1\n9 4\nWWBBWBWBW\n"
+	}
+]
